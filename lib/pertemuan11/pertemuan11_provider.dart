@@ -6,6 +6,8 @@ class Pertemuan11Provider extends ChangeNotifier {
     setData = hp;
   }
 
+  var currentPage = 'hp';
+
   final hp = {
     "data": [
       {
@@ -60,8 +62,22 @@ class Pertemuan11Provider extends ChangeNotifier {
   ubahList(val) {
     if (val == 'hp') {
       setData = hp;
-    } else {
+      currentPage = val;
+    } else if (val == 'laptop') {
       setData = laptop;
+      currentPage = val;
     }
+  }
+
+  clearPage() {
+    //_data = null;
+    if (currentPage == 'hp') {
+      hp.clear();
+      _data = null;
+    } else {
+      laptop.clear();
+      _data = null;
+    }
+    notifyListeners();
   }
 }
