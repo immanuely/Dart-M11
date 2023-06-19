@@ -1,5 +1,5 @@
-import 'dart:html';
-
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pertemuan11/pertemuan11_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,6 @@ class _Pertemuan11ScreenState extends State<Pertemuan11Screen> {
     Future.microtask(() {
       Provider.of<Pertemuan11Provider>(context, listen: false).initialData();
     });
-    super.initState();
   }
 
   Widget build(BuildContext context) {
@@ -32,23 +31,26 @@ class _Pertemuan11ScreenState extends State<Pertemuan11Screen> {
 
   body(BuildContext context) {
     final prov = Provider.of<Pertemuan11Provider>(context);
-    if (prov.data == null) {
-      return const CircularProgressIndicator();
-    } else {
+    if (prov.data != null && prov.data.isNotEmpty) {
       return ListView(
           children: List.generate(prov.data['data']!.length, (index) {
         var item = prov.data['data']![index];
         return Column(
           children: [
             ListTile(
-              leading: CircleAvatar(backgroundImage: NetworkImage(item['img'])),
-              title: Text(
-                  "${item['model']}\n${item['developer']}\n${item['price']}\n${item['rating']}"),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(item['img']),
+              ),
+              title: Text(item['model']),
+              subtitle: Text(
+                  'Developer : ${item['developer']}\nPrice : ${item['price']}\nRating : ${item['rating']}'),
             ),
-            const Divider()
+            Divider()
           ],
         );
       }));
+    } else {
+      return Center(child: Text('Data tidak ditemukan'));
     }
   }
 
@@ -56,26 +58,35 @@ class _Pertemuan11ScreenState extends State<Pertemuan11Screen> {
     final prov = Provider.of<Pertemuan11Provider>(context);
 
     return PopupMenuButton(
-      icon: const Icon(Icons.more_vert),
-      itemBuilder: (BuildContext context) {
-        return <PopupMenuEntry>[
-          PopupMenuItem(
-            child: ListTile(
-              onTap: () => prov.ubahList('hp'),
+        icon: Icon(Icons.more_vert),
+        itemBuilder: (BuildContext context) {
+          return <PopupMenuEntry>[
+            PopupMenuItem(
+                child: ListTile(
+              onTap: () {
+                prov.ubahList('hp');
+              },
               leading: const Icon(Icons.phone),
-              title: const Text('Handphone'),
-            ),
-          ),
-          const PopupMenuDivider(),
-          PopupMenuItem(
-            child: ListTile(
-              onTap: () => prov.ubahList('laptop'),
+              title: Text('HP'),
+            )),
+            PopupMenuItem(
+                child: ListTile(
+              onTap: () {
+                prov.ubahList('laptop');
+              },
               leading: const Icon(Icons.laptop),
-              title: const Text('Laptop'),
-            ),
-          )
-        ];
-      },
-    );
+              title: Text('Laptop'),
+            )),
+            PopupMenuDivider(),
+            PopupMenuItem(
+                child: ListTile(
+              onTap: () {
+                prov.clearPage();
+              },
+              leading: const Icon(Icons.delete),
+              title: Text('Clear'),
+            )),
+          ];
+        });
   }
 }
